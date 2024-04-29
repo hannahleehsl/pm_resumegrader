@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassMash Resume Grader</title>
+    <link rel="stylesheet" href="/styles/resume.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="nav">
+        <div class="nav-title">
+            <a href="/" class="navbar-brand">PASSMASH</a><span class="brand-subtitle">Career Services</span>
+        </div>
+        <div class="nav-auth">
+            <!-- Display the user profile picture -->
+            <a href="/profile">
+                <img src="https://s3.us-west-2.amazonaws.com/passmash.com/fa651356-dbcc-48dc-85fd-48436aa36dbd.jpeg" 
+                     alt="User Profile Picture" 
+                     id="userPfp" 
+                     class="user-profile">
+            </a>
+        </div>
+    </div>
+    <div id="big">
+        <div id="resumeBody">
+            <div id="pdfView">
+                <!-- Interactive area for PDF upload with specific instruction -->
+                <div id="pdfDropBox" onclick="document.getElementById('pdfInput').click();" class="pdf-drop-box">
+                  <div class="file is-boxed">
+                    <label class="file-label">
+                      <input class="file-input" type="file" name="resume" id="fileInput" hidden onchange="updateFileName()" />
+                      <span class="file-cta">
+                        <span class="file-icon">
+                          <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label"> Choose a file… </span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <input type="file" id="pdfInput" accept="application/pdf" style="display: none;" onchange="uploadPDF()">
+                <!-- Placeholder for displaying the PDF once uploaded -->
+                <iframe id="pdfFrame" src="about:blank" width="100%" height="400px" style="display:none;" frameborder="0" aria-label="Resume Viewer"></iframe>
+            </div>
+        </div>
+        <div id="resultBody" class="results-body">
+            <!-- Placeholder for displaying results after resume analysis -->
+            <h3>Resume Analysis Results</h3>
+            <p>Details of your resume analysis will appear here, including insights into the structure, content, and suggestions for improvement.</p>
+        </div>
+    </div>
+
+    <script>
+      function uploadPDF() {
+          const fileInput = document.getElementById('pdfInput');
+          const pdfFrame = document.getElementById('pdfFrame');
+          const resultBody = document.getElementById('resultBody');
+  
+          if (fileInput.files.length > 0) {
+              const formData = new FormData();
+              formData.append('pdf', fileInput.files[0]);
+  
+              fetch('/grade-resume', {
+                  method: 'POST',
+                  body: formData,
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if(data.pdfUrl) {
+                      pdfFrame.src = data.pdfUrl;
+                      pdfFrame.style.display = 'block';
+                      resultBody.innerHTML = `<div class='grading-result'><strong>Grading Result:</strong> <br>${data.text}</div>`; // Display grading result
+                  } else {
+                      resultBody.innerHTML = `<div class='error-message'>No data returned from the server. Please check the format of the uploaded PDF.</div>`;
+                      console.error('No data returned from the server');
+                  }
+              })
+              .catch(error => {
+                  resultBody.innerHTML = `<div class='error-message'>Error uploading or analyzing the PDF. Please try again later.</div>`;
+                  console.error('Error:', error);
+              });
+          }
+      }
+
+      function updateFileName() {
+        const input = document.getElementById('fileInput');
+        const label = document.querySelector('.file-label');
+        const fileName = input.files[0] ? input.files[0].name : 'Choose a file…';
+        label.textContent = fileName;
+    }
+    const fileInput = document.querySelector("#file-js-example input[type=file]");
+      fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+          const fileName = document.querySelector("#file-js-example .file-name");
+          fileName.textContent = fileInput.files[0].name;
+        }
+    };
+  </script>
+</body>
+</html>

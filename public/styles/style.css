@@ -1,0 +1,44 @@
+body{
+    padding: 0;
+    margin: 0;
+    overflow: hidden; /* users can't scroll*/
+    font-family: "Roboto", sans-serif;
+}
+
+/* You may modify these to make it look better*/
+#nav {
+    position: fixed;
+    width: 100%;
+    background: rgb(255, 255, 255);
+    top: 0;
+    left: 0;
+    padding: 5px 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.navbar-brand {
+    font-size: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 10px; /* Aligns title to the left */
+    font-family: Tahoma, sans-serif;
+    color: rgb(0, 73, 219);
+}
+.nav-auth a{
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-right: 10px;
+    font-size: 13px;
+}
+.nav-title span{
+    color:rgb(169, 169, 169);
+}
+#userPfp{
+    width: 30px;
+    height: 30px;
+    margin-top: 2px;
+    border-radius: 50%;
+}
